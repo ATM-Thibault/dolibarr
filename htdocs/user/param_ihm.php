@@ -113,7 +113,22 @@ if (empty($reshook)) {
 			} else {
 				$tabparam["MAIN_SIZE_LISTE_LIMIT"] = '';
 			}
+			
+			/************************************************************************************START HOOK****************************************/
+			
+				// Other attributes pour permettre le choix des couleurs des highlights
+			$parameters = array('objectsrc' => $objectsrc,'colspan' => ' colspan="2"', 'cols'=>2);
+			$reshook = $hookmanager->executeHooks('definecolor', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
+			print $hookmanager->resPrint;
+			if (empty($reshook) && ! empty($extrafields->attribute_label)) {
+				print $object->showOptionals($extrafields, 'edit');
+			}
+			
+			/************************************************************************************END HOOK****************************************/
+			
+			
 
+			
 			if (GETPOST("check_MAIN_THEME") == "on") {
 				$tabparam["MAIN_THEME"] = $_POST["main_theme"];
 			} else {
@@ -263,7 +278,7 @@ if ($action == 'edit')
 
     print '<tr class="oddeven"><td>'.$langs->trans("Language").'</td>';
     print '<td>';
-    $s=picto_from_langcode($conf->global->MAIN_LANG_DEFAULT);
+    $s = picto_from_langcode($conf->global->MAIN_LANG_DEFAULT);
     print $s?$s.' ':'';
     print ($conf->global->MAIN_LANG_DEFAULT=='auto'?$langs->trans("AutoDetectLang"):$langs->trans("Language_".$conf->global->MAIN_LANG_DEFAULT));
     print '</td>';
@@ -283,6 +298,22 @@ if ($action == 'edit')
     print '> '.$langs->trans("UsePersonalValue").'</td>';
     print '<td><input class="flat" name="main_size_liste_limit" id="main_size_liste_limit" size="4" value="' . (! empty($object->conf->MAIN_SIZE_LISTE_LIMIT)?$object->conf->MAIN_SIZE_LISTE_LIMIT:'') . '"></td></tr>';
 
+    
+    
+/************************************************************************************START HOOK****************************************/
+
+
+    // Other attributes pour permettre le choix des couleurs des highlights
+    $parameters = array('objectsrc' => $objectsrc,'colspan' => ' colspan="2"', 'cols'=>2);
+    $reshook = $hookmanager->executeHooks('highlightcolor', $parameters, $object, $action);
+    print $hookmanager->resPrint;
+    if (empty($reshook) && ! empty($extrafields->attribute_label)) {
+    	print $object->showOptionals($extrafields, 'edit');
+    }
+    
+/************************************************************************************END HOOK****************************************/
+    
+    
     print '</table><br>';
 
     // Theme
@@ -344,11 +375,13 @@ else
     print (isset($object->conf->MAIN_LANG_DEFAULT) && $object->conf->MAIN_LANG_DEFAULT=='auto'?$langs->trans("AutoDetectLang"):(! empty($object->conf->MAIN_LANG_DEFAULT)?$langs->trans("Language_".$object->conf->MAIN_LANG_DEFAULT):''));
     print '</td></tr>';
 
+    
+    
 
-    print '<tr class="oddeven"><td>'.$langs->trans("MaxSizeList").'</td>';
-    print '<td>'.(! empty($conf->global->MAIN_SIZE_LISTE_LIMIT)?$conf->global->MAIN_SIZE_LISTE_LIMIT:'&nbsp;').'</td>';
-    print '<td align="left" class="nowrap" width="20%"><input '.$bc[$var].' type="checkbox" disabled '.(! empty($object->conf->MAIN_SIZE_LISTE_LIMIT)?" checked":"").'> '.$langs->trans("UsePersonalValue").'</td>';
-    print '<td>' . (! empty($object->conf->MAIN_SIZE_LISTE_LIMIT)?$object->conf->MAIN_SIZE_LISTE_LIMIT:'&nbsp;') . '</td></tr>';
+//     print '<tr class="oddeven"><td>'.$langs->trans("MaxSizeList").'</td>';
+//     print '<td>'.(! empty($conf->global->MAIN_SIZE_LISTE_LIMIT)?$conf->global->MAIN_SIZE_LISTE_LIMIT:'&nbsp;').'</td>';
+//     print '<td align="left" class="nowrap" width="20%"><input '.$bc[$var].' type="checkbox" disabled '.(! empty($object->conf->MAIN_SIZE_LISTE_LIMIT)?" checked":"").'> '.$langs->trans("UsePersonalValue").'</td>';
+//     print '<td>' . (! empty($object->conf->MAIN_SIZE_LISTE_LIMIT)?$object->conf->MAIN_SIZE_LISTE_LIMIT:'&nbsp;') . '</td></tr>';
 
     print '</table><br>';
 
